@@ -1,36 +1,41 @@
 import { useState } from "react";
+import _ from "lodash";
 
-import useBoard from "./useBoard";
+import useBigBoard from "./useBigBoard";
 
-import { BoardIndex, Marker, Player, PlayerMarker } from "../../types";
+import { Player } from "../../types";
 
 const useGame = () => {
+    const [AIMode, toggleAIMode] = useState(true);
+
     const [player, togglePlayer] = useState<Player>("Player1");
-    const [[winner, winningMarker], setWinner] = useState<
-        [Player | null, Marker]
-    >([null, ""]);
+    const [bigWinner, setBigWinner] = useState<Player | null>(null);
+    const [activeBoard, setActiveBoard] = useState<number>(-1);
 
-    const { board, setBoard, makeMove } = useBoard();
+    const { bigBoard, winners, resetBoard, makeMove } = useBigBoard();
 
-    const move = (r: BoardIndex, c: BoardIndex) => {
-        if (makeMove(PlayerMarker[player], r, c)) {
-            setWinner([player, PlayerMarker[player]]);
-        } else {
-            togglePlayer(player === "Player1" ? "Player2" : "Player1");
-        }
+    const move = (boardIdx: number, cellIdx: number) => {
+        makeMove(player, boardIdx, cellIdx);
+        setActiveBoard(!winners[cellIdx] ? cellIdx : -1);
+        togglePlayer(player === "Player1" ? "Player2" : "Player1");
     };
 
     const clear = () => {
-        setBoard([
-            ["", "", ""],
-            ["", "", ""],
-            ["", "", ""]
-        ]);
-        setWinner([null, ""]);
+        resetBoard();
+        setActiveBoard(-1);
         togglePlayer("Player1");
     };
 
-    return { player, winner, winningMarker, board, move, clear };
+    return {
+        AIMode,
+        toggleAIMode,
+        bigBoard,
+        activeBoard,
+        winners,
+        player,
+        move,
+        clear
+    };
 };
 
 export default useGame;
