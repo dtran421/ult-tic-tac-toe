@@ -86,13 +86,10 @@ const useBigBoard = () => {
             winners[boardIdx] = hasWon ? player : null;
             return winners;
         });
+        return hasWon;
     };
 
-    const makeMove = (
-        player: Player,
-        boardIdx: number,
-        cellIdx: number
-    ): void => {
+    const makeMove = (player: Player, boardIdx: number, cellIdx: number) => {
         const newBigBoard = bigBoard.map((board, i) => {
             if (boardIdx == i) {
                 board = board.map((marker, j) => {
@@ -107,8 +104,9 @@ const useBigBoard = () => {
         });
         setBigBoard(newBigBoard);
         if (!isDrawn(newBigBoard[boardIdx], boardIdx)) {
-            checkWin(newBigBoard[boardIdx], boardIdx, player);
+            return checkWin(newBigBoard[boardIdx], boardIdx, player);
         }
+        return true;
     };
 
     const resetBoard = () => {

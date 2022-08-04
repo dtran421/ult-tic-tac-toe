@@ -36,7 +36,7 @@ const Index = () => {
                                     player === "Player1"
                                         ? "bg-sky-500"
                                         : "bg-rose-500"
-                                } rounded-xl px-3 py-1`}
+                                } border-2 border-gray-300 rounded-lg px-3 py-1`}
                             >
                                 {PlayerMarker[player]}
                             </span>

@@ -15,8 +15,12 @@ const useGame = () => {
     const { bigBoard, winners, resetBoard, makeMove } = useBigBoard();
 
     const move = (boardIdx: number, cellIdx: number) => {
-        makeMove(player, boardIdx, cellIdx);
-        setActiveBoard(!winners[cellIdx] ? cellIdx : -1);
+        if (makeMove(player, boardIdx, cellIdx)) {
+            setActiveBoard(boardIdx !== cellIdx ? cellIdx : -1);
+        } else {
+            setActiveBoard(!winners[cellIdx] ? cellIdx : -1);
+        }
+
         togglePlayer(player === "Player1" ? "Player2" : "Player1");
     };
 
