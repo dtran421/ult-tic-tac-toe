@@ -1,6 +1,6 @@
 import { PlayerMarker } from "../types";
-import BigBoard from "./Components/BigBoard";
-import useGame from "./Components/useGame";
+import BigBoard from "./components/BigBoard";
+import useGame from "./hooks/useGame";
 
 const Index = () => {
     const {
