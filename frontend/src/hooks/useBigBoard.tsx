@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { useState } from "react";
 
-import { Board, BoardSize, Player, PlayerMarker, Winner } from "../../types";
+import { Board, BoardSize, Marker, Player, PlayerMarker } from "../../types";
 
 const useBigBoard = () => {
     const [bigBoard, setBigBoard] = useState<Board[]>(
@@ -10,8 +10,8 @@ const useBigBoard = () => {
             _.fill(Array(BoardSize * BoardSize), "")
         )
     );
-    const [winners, setWinners] = useState<(Winner | null)[]>(
-        _.fill(Array(BoardSize * BoardSize), null)
+    const [winners, setWinners] = useState<Marker[]>(
+        _.fill(Array(BoardSize * BoardSize), "")
     );
 
     const isDrawn = (board: Board, boardIdx: number) => {
@@ -21,18 +21,21 @@ const useBigBoard = () => {
             }
         }
         setWinners((winners) => {
-            winners[boardIdx] = "DRAW";
+            winners[boardIdx] = PlayerMarker.DRAW;
             return winners;
         });
         return true;
     };
 
-    const checkWin = (board: Board, boardIdx: number, player: Player) => {
+    const checkWin = (board: Board) => {
         let hasWon = false;
 
         // check rows
         for (let r = 0; r < BoardSize * BoardSize; r += BoardSize) {
-            if (board[r]) {
+            if (
+                board[r] == PlayerMarker.Player1 ||
+                board[r] == PlayerMarker.Player2
+            ) {
                 let check = true;
                 for (let c = 1; c < BoardSize; c++) {
                     check &&= board[r] == board[r + c];
@@ -43,7 +46,10 @@ const useBigBoard = () => {
 
         // check cols
         for (let c = 0; c < BoardSize; c++) {
-            if (board[c]) {
+            if (
+                board[c] == PlayerMarker.Player1 ||
+                board[c] == PlayerMarker.Player2
+            ) {
                 let check = true;
                 for (
                     let r = BoardSize;
@@ -57,7 +63,10 @@ const useBigBoard = () => {
         }
 
         // check neg diag
-        if (board[0]) {
+        if (
+            board[0] == PlayerMarker.Player1 ||
+            board[0] == PlayerMarker.Player2
+        ) {
             let check = true;
             for (
                 let d = BoardSize + 1;
@@ -70,7 +79,10 @@ const useBigBoard = () => {
         }
 
         // check pos diag
-        if (board[BoardSize - 1]) {
+        if (
+            board[BoardSize - 1] == PlayerMarker.Player1 ||
+            board[BoardSize - 1] == PlayerMarker.Player2
+        ) {
             let check = true;
             for (
                 let d = 2 * BoardSize - 2;
@@ -82,8 +94,15 @@ const useBigBoard = () => {
             hasWon ||= check;
         }
 
+        return hasWon;
+    };
+
+    const checkBoardWin = (board: Board, boardIdx: number, player: Player) => {
+        const hasWon = checkWin(board);
         setWinners((winners) => {
-            winners[boardIdx] = hasWon ? player : null;
+            if (hasWon) {
+                winners[boardIdx] = PlayerMarker[player];
+            }
             return winners;
         });
         return hasWon;
@@ -104,7 +123,7 @@ const useBigBoard = () => {
         });
         setBigBoard(newBigBoard);
         if (!isDrawn(newBigBoard[boardIdx], boardIdx)) {
-            return checkWin(newBigBoard[boardIdx], boardIdx, player);
+            return checkBoardWin(newBigBoard[boardIdx], boardIdx, player);
         }
         return true;
     };
@@ -116,10 +135,10 @@ const useBigBoard = () => {
                 _.fill(Array(BoardSize * BoardSize), "")
             )
         );
-        setWinners(_.fill(Array(BoardSize * BoardSize), null));
+        setWinners(_.fill(Array(BoardSize * BoardSize), ""));
     };
 
-    return { bigBoard, winners, resetBoard, makeMove };
+    return { bigBoard, winners, checkWin, resetBoard, makeMove };
 };
 
 export default useBigBoard;

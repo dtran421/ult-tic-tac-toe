@@ -2,13 +2,14 @@ import _ from "lodash";
 
 import BoardGrid from "./BoardGrid";
 
-import { Board, BoardSize, Player, Winner } from "../../types";
+import { Board, BoardSize, Marker, Player } from "../../types";
 
 interface BigBoardProps {
     player: Player;
     bigBoard: Board[];
     activeBoard: number;
-    winners: (Winner | null)[];
+    bigWinner: Player | null;
+    winners: Marker[];
     move: (boardIdx: number, cellIdx: number) => void;
 }
 
@@ -16,6 +17,7 @@ const BigBoard = ({
     player,
     bigBoard,
     activeBoard,
+    bigWinner,
     winners,
     move
 }: BigBoardProps) => {
@@ -42,7 +44,8 @@ const BigBoard = ({
                             }}
                             winner={winners[boardIdx]}
                             active={
-                                activeBoard === -1 || activeBoard === boardIdx
+                                !bigWinner &&
+                                (activeBoard === -1 || activeBoard === boardIdx)
                             }
                         />
                     </div>

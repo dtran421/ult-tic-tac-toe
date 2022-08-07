@@ -8,5 +8,4 @@ export enum PlayerMarker {
     Player2 = "O",
     DRAW = "-"
 }
-export type Winner = Player | "DRAW";
-export type Marker = PlayerMarker.Player1 | PlayerMarker.Player2 | "";
+export type Marker = PlayerMarker | "";

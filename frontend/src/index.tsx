@@ -8,6 +8,7 @@ const Index = () => {
         toggleAIMode,
         bigBoard,
         activeBoard,
+        bigWinner,
         winners,
         player,
         move,
@@ -29,7 +30,13 @@ const Index = () => {
                         </div>
                         <div className="flex justify-center items-center space-x-4">
                             <h1 className="text-3xl text-white text-semibold">
-                                Player {player === "Player1" ? 1 : 2}'s turn
+                                {bigWinner
+                                    ? `Player ${
+                                          bigWinner === "Player1" ? "1" : "2"
+                                      } won!`
+                                    : `Player ${
+                                          player === "Player1" ? 1 : 2
+                                      }'s turn`}
                             </h1>
                             <span
                                 className={`flex items-center text-2xl text-white text-medium ${
@@ -38,7 +45,9 @@ const Index = () => {
                                         : "bg-rose-500"
                                 } border-2 border-gray-300 rounded-lg px-3 py-1`}
                             >
-                                {PlayerMarker[player]}
+                                {bigWinner
+                                    ? PlayerMarker[bigWinner]
+                                    : PlayerMarker[player]}
                             </span>
                         </div>
                         <div className="flex justify-end">
@@ -53,7 +62,14 @@ const Index = () => {
                         </div>
                     </div>
                     <BigBoard
-                        {...{ player, bigBoard, activeBoard, winners, move }}
+                        {...{
+                            player,
+                            bigBoard,
+                            activeBoard,
+                            bigWinner,
+                            winners,
+                            move
+                        }}
                     />
                 </div>
             </div>

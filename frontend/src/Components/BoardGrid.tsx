@@ -1,12 +1,12 @@
 import Cell from "./Cell";
 
-import { Board, BoardSize, Player, PlayerMarker, Winner } from "../../types";
+import { Board, Marker, Player, PlayerMarker } from "../../types";
 
 interface BoardProps {
     board: Board;
     boardIdx: number;
     active: boolean;
-    winner: Winner | null;
+    winner: Marker;
     player: Player;
     move: (boardIdx: number, cellIdx: number) => void;
 }
@@ -33,12 +33,12 @@ const BoardGrid = ({
                 <div className="absolute top-1/2 left-1/2 w-full h-full flex justify-center items-center bg-gray-900/70 -translate-x-1/2 -translate-y-1/2">
                     <h1
                         className={`text-5xl ${
-                            winner === "Player1"
+                            winner === PlayerMarker.Player1
                                 ? "text-sky-500"
                                 : "text-rose-500"
                         }`}
                     >
-                        {PlayerMarker[winner]}
+                        {winner}
                     </h1>
                 </div>
             )}

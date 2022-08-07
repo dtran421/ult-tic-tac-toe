@@ -13,7 +13,13 @@ const useGame = () => {
     const [bigWinner, setBigWinner] = useState<Player | null>(null);
     const [activeBoard, setActiveBoard] = useState<number>(-1);
 
-    const { bigBoard, winners, resetBoard, makeMove } = useBigBoard();
+    const { bigBoard, winners, checkWin, resetBoard, makeMove } = useBigBoard();
+
+    useEffect(() => {
+        if (checkWin(winners)) {
+            setBigWinner(player);
+        }
+    }, [bigBoard]);
 
     useEffect(() => {
         if (AIMode && player === "Player2") {
@@ -27,12 +33,20 @@ const useGame = () => {
                         )
                         .join("#")}$${activeBoard}`
                 });
-                const body = await res.text();
+                const body = (await res.text())
+                    .split("$")
+                    .map((val) => parseInt(val));
+                const [boardIdx, cellIdx] = body;
 
-                console.log(body);
+                if (boardIdx == -1 || cellIdx === -1) {
+                    console.log("Error: invalid move attempt");
+                    return;
+                }
+
+                move(boardIdx, cellIdx);
             })();
         }
-    }, [player]);
+    }, [AIMode, player]);
 
     const move = (boardIdx: number, cellIdx: number) => {
         if (makeMove(player, boardIdx, cellIdx)) {
@@ -50,6 +64,7 @@ const useGame = () => {
         resetBoard();
         setActiveBoard(-1);
         togglePlayer("Player1");
+        setBigWinner(null);
     };
 
     return {
@@ -57,6 +72,7 @@ const useGame = () => {
         toggleAIMode,
         bigBoard,
         activeBoard,
+        bigWinner,
         winners,
         player,
         move,
