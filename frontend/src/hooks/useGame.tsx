@@ -22,7 +22,7 @@ const useGame = () => {
     }, [bigBoard]);
 
     useEffect(() => {
-        if (AIMode && player === "Player2") {
+        if (AIMode && !bigWinner && player === "Player2") {
             (async () => {
                 const res = await fetch("http://127.0.0.1:8000/ai/", {
                     method: "POST",

@@ -70,7 +70,7 @@ const useBigBoard = () => {
             let check = true;
             for (
                 let d = BoardSize + 1;
-                d < BoardSize * BoardSize + 1;
+                d < BoardSize * BoardSize;
                 d += BoardSize + 1
             ) {
                 check &&= board[0] == board[d];
