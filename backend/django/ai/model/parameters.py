@@ -1,4 +1,6 @@
-PLAYER2_SYMBOL = "O"
+PLAYER1_MARKER = "X"
+PLAYER2_MARKER = "O"
+EMPTY_MARKER = "."
 
 """
 Board metadata
@@ -10,11 +12,11 @@ BOARD_LEN = BOARD_SIZE * BOARD_SIZE
 """
 Compression symbols
 """
-PLAYER1_MARKER = "1"
-PLAYER2_MARKER = "2"
+PLAYER1_WIN = "1"
+PLAYER2_WIN = "2"
 
-DRAW_MARKER = "%"
-EMPTY_MARKER = "@"
+DRAW_SYMBOL = "%"
+EMPTY_SYMBOL = "@"
 
 
 """
@@ -23,7 +25,7 @@ AI strategies
     1 = minimax
     2 = monte carlo
 """
-MODE = 0
+MODE = 1
 
 
 """

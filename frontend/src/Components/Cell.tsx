@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 
-import { BoardSize, Marker, Player, PlayerMarker } from "../../types";
+import {
+    BOARD_LENGTH,
+    BOARD_SIZE,
+    Marker,
+    Player,
+    PlayerMarker
+} from "../../types";
 
 interface CellProps {
     boardIdx: number;
@@ -8,6 +14,7 @@ interface CellProps {
     marker: Marker;
     active: boolean;
     player: Player;
+    AIMode: boolean;
     winner: Marker;
     move: (boardIdx: number, cellIdx: number) => void;
 }
@@ -18,6 +25,7 @@ const Cell = ({
     marker,
     active,
     player,
+    AIMode,
     winner,
     move
 }: CellProps) => {
@@ -31,7 +39,7 @@ const Cell = ({
             className={`flex justify-center items-center ${
                 cellIdx % 3 ? "border-l-2 border-white" : ""
             } ${
-                cellIdx < BoardSize * BoardSize - BoardSize
+                cellIdx < BOARD_LENGTH - BOARD_SIZE
                     ? "border-b-2 border-white"
                     : ""
             } p-1`}
@@ -51,7 +59,12 @@ const Cell = ({
                         ? "hover:bg-sky-400"
                         : "hover:bg-rose-400"
                 } disabled:bg-transparent text-white text-3xl font-semibold rounded-xl transition duration-200 ease-linear`}
-                disabled={marker !== "" || winner !== "" || !active}
+                disabled={
+                    marker !== "" ||
+                    winner !== "" ||
+                    !active ||
+                    (AIMode && player === "Player2")
+                }
             >
                 {displayMarker}
             </button>

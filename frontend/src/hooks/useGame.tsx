@@ -3,21 +3,41 @@ import _ from "lodash";
 
 import useBigBoard from "./useBigBoard";
 
-import { Player } from "../../types";
+import {
+    Board,
+    BOARD_LENGTH,
+    Marker,
+    Player,
+    PlayerMarker,
+    Winner
+} from "../../types";
 
 const useGame = () => {
     const [AIMode, toggleAIMode] = useState(true);
 
     const [player, togglePlayer] = useState<Player>("Player1");
-    // TODO: implement check for game win
-    const [bigWinner, setBigWinner] = useState<Player | null>(null);
+    const [bigWinner, setBigWinner] = useState<Winner | null>(null);
     const [activeBoard, setActiveBoard] = useState<number>(-1);
 
-    const { bigBoard, winners, checkWin, resetBoard, makeMove } = useBigBoard();
+    const {
+        bigBoard,
+        winners,
+        checkDraw,
+        checkWin,
+        updateBoard,
+        resetBoard,
+        makeMove
+    } = useBigBoard();
 
     useEffect(() => {
-        if (checkWin(winners)) {
-            setBigWinner(player);
+        const [hasWon, winner] = checkWin(winners);
+        if (hasWon) {
+            setBigWinner(
+                winner === PlayerMarker.Player1 ? "Player1" : "Player2"
+            );
+        }
+        if (checkDraw(winners)) {
+            setBigWinner("DRAW");
         }
     }, [bigBoard]);
 
@@ -49,7 +69,8 @@ const useGame = () => {
     }, [AIMode, player]);
 
     const move = (boardIdx: number, cellIdx: number) => {
-        if (makeMove(player, boardIdx, cellIdx)) {
+        const finishedBoard = makeMove(player, boardIdx, cellIdx);
+        if (finishedBoard) {
             setActiveBoard(
                 boardIdx !== cellIdx && !winners[cellIdx] ? cellIdx : -1
             );
@@ -58,6 +79,55 @@ const useGame = () => {
         }
 
         togglePlayer(player === "Player1" ? "Player2" : "Player1");
+    };
+
+    const updatePlayer = (newBigBoard: Board[]) => {
+        let p1Markers = 0;
+        let p2Markers = 0;
+
+        newBigBoard.forEach((board) =>
+            board.forEach((marker) => {
+                if (marker === PlayerMarker.Player1) {
+                    p1Markers += 1;
+                }
+                if (marker === PlayerMarker.Player2) {
+                    p2Markers += 1;
+                }
+            })
+        );
+
+        togglePlayer(p1Markers > p2Markers ? "Player2" : "Player1");
+    };
+
+    const loadBoard = (ubsfBoard: string) => {
+        const params = ubsfBoard.split("$");
+        const [bigBoardStr, boardIdx] = [params[0], parseInt(params[1])];
+
+        if (
+            bigBoardStr.length !=
+                BOARD_LENGTH * BOARD_LENGTH + (BOARD_LENGTH - 1) ||
+            boardIdx < -1 ||
+            boardIdx >= BOARD_LENGTH
+        ) {
+            console.log("error: invalid ubsf string!");
+        }
+
+        const newBigBoard = bigBoardStr.split("#").map((board) => {
+            const newBoard: Marker[] = [];
+            for (let char of board) {
+                newBoard.push(
+                    char === PlayerMarker.Player1 ||
+                        char === PlayerMarker.Player2
+                        ? char
+                        : ""
+                );
+            }
+
+            return newBoard;
+        });
+
+        updateBoard(newBigBoard);
+        updatePlayer(newBigBoard);
     };
 
     const clear = () => {
@@ -76,6 +146,7 @@ const useGame = () => {
         winners,
         player,
         move,
+        loadBoard,
         clear
     };
 };

@@ -2,19 +2,28 @@ import _ from "lodash";
 
 import BoardGrid from "./BoardGrid";
 
-import { Board, BoardSize, Marker, Player } from "../../types";
+import {
+    Board,
+    BOARD_LENGTH,
+    BOARD_SIZE,
+    Marker,
+    Player,
+    Winner
+} from "../../types";
 
 interface BigBoardProps {
     player: Player;
+    AIMode: boolean;
     bigBoard: Board[];
     activeBoard: number;
-    bigWinner: Player | null;
+    bigWinner: Winner | null;
     winners: Marker[];
     move: (boardIdx: number, cellIdx: number) => void;
 }
 
 const BigBoard = ({
     player,
+    AIMode,
     bigBoard,
     activeBoard,
     bigWinner,
@@ -22,7 +31,7 @@ const BigBoard = ({
     move
 }: BigBoardProps) => {
     return (
-        <div className="relative overflow-hidden flex justify-center bg-gray-300/30 rounded-xl p-2">
+        <div className="max-w-2xl relative overflow-hidden flex justify-center bg-gray-300/30 rounded-xl p-2 mx-auto">
             <div className="grid grid-cols-3">
                 {bigBoard.map((board, boardIdx) => (
                     <div
@@ -30,7 +39,7 @@ const BigBoard = ({
                         className={`${
                             boardIdx % 3 ? "border-l-4 border-white" : ""
                         } ${
-                            boardIdx < BoardSize * BoardSize - BoardSize
+                            boardIdx < BOARD_LENGTH - BOARD_SIZE
                                 ? "border-b-4 border-white"
                                 : ""
                         } p-3`}
@@ -40,6 +49,7 @@ const BigBoard = ({
                                 board,
                                 boardIdx,
                                 player,
+                                AIMode,
                                 move
                             }}
                             winner={winners[boardIdx]}

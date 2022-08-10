@@ -8,6 +8,7 @@ interface BoardProps {
     active: boolean;
     winner: Marker;
     player: Player;
+    AIMode: boolean;
     move: (boardIdx: number, cellIdx: number) => void;
 }
 
@@ -17,6 +18,7 @@ const BoardGrid = ({
     active,
     winner,
     player,
+    AIMode,
     move
 }: BoardProps) => {
     return (
@@ -52,6 +54,7 @@ const BoardGrid = ({
                             marker,
                             active,
                             player,
+                            AIMode,
                             winner,
                             move
                         }}

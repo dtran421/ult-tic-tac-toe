@@ -1,64 +1,63 @@
 import _ from "lodash";
 import { useState } from "react";
 
-import { Board, BoardSize, Marker, Player, PlayerMarker } from "../../types";
+import {
+    Board,
+    BOARD_LENGTH,
+    BOARD_SIZE,
+    Marker,
+    Player,
+    PlayerMarker
+} from "../../types";
 
 const useBigBoard = () => {
     const [bigBoard, setBigBoard] = useState<Board[]>(
-        _.fill(
-            Array(BoardSize * BoardSize),
-            _.fill(Array(BoardSize * BoardSize), "")
-        )
+        _.fill(Array(BOARD_LENGTH), _.fill(Array(BOARD_LENGTH), ""))
     );
     const [winners, setWinners] = useState<Marker[]>(
-        _.fill(Array(BoardSize * BoardSize), "")
+        _.fill(Array(BOARD_LENGTH), "")
     );
 
-    const isDrawn = (board: Board, boardIdx: number) => {
-        for (let cellIdx = 0; cellIdx < BoardSize * BoardSize; cellIdx++) {
+    const checkDraw = (board: Board) => {
+        for (let cellIdx = 0; cellIdx < BOARD_LENGTH; cellIdx++) {
             if (!board[cellIdx]) {
                 return false;
             }
         }
-        setWinners((winners) => {
-            winners[boardIdx] = PlayerMarker.DRAW;
-            return winners;
-        });
         return true;
     };
 
-    const checkWin = (board: Board) => {
+    const checkWin = (board: Board): [boolean, Marker] => {
         let hasWon = false;
+        let winner: Marker = "";
 
         // check rows
-        for (let r = 0; r < BoardSize * BoardSize; r += BoardSize) {
+        for (let r = 0; r < BOARD_LENGTH; r += BOARD_SIZE) {
             if (
                 board[r] == PlayerMarker.Player1 ||
                 board[r] == PlayerMarker.Player2
             ) {
                 let check = true;
-                for (let c = 1; c < BoardSize; c++) {
+                for (let c = 1; c < BOARD_SIZE; c++) {
                     check &&= board[r] == board[r + c];
                 }
                 hasWon ||= check;
+                winner = check ? board[r] : winner;
             }
         }
 
         // check cols
-        for (let c = 0; c < BoardSize; c++) {
+        for (let c = 0; c < BOARD_SIZE; c++) {
             if (
                 board[c] == PlayerMarker.Player1 ||
                 board[c] == PlayerMarker.Player2
             ) {
                 let check = true;
-                for (
-                    let r = BoardSize;
-                    r < BoardSize * BoardSize;
-                    r += BoardSize
-                ) {
+                for (let r = BOARD_SIZE; r < BOARD_LENGTH; r += BOARD_SIZE) {
                     check &&= board[c] == board[c + r];
                 }
                 hasWon ||= check;
+                winner = check ? board[c] : winner;
             }
         }
 
@@ -69,42 +68,55 @@ const useBigBoard = () => {
         ) {
             let check = true;
             for (
-                let d = BoardSize + 1;
-                d < BoardSize * BoardSize;
-                d += BoardSize + 1
+                let d = BOARD_SIZE + 1;
+                d < BOARD_LENGTH;
+                d += BOARD_SIZE + 1
             ) {
                 check &&= board[0] == board[d];
             }
             hasWon ||= check;
+            winner = check ? board[0] : winner;
         }
 
         // check pos diag
         if (
-            board[BoardSize - 1] == PlayerMarker.Player1 ||
-            board[BoardSize - 1] == PlayerMarker.Player2
+            board[BOARD_SIZE - 1] == PlayerMarker.Player1 ||
+            board[BOARD_SIZE - 1] == PlayerMarker.Player2
         ) {
             let check = true;
             for (
-                let d = 2 * BoardSize - 2;
-                d < BoardSize * BoardSize - BoardSize + 1;
-                d += BoardSize - 1
+                let d = 2 * BOARD_SIZE - 2;
+                d < BOARD_LENGTH - BOARD_SIZE + 1;
+                d += BOARD_SIZE - 1
             ) {
-                check &&= board[BoardSize - 1] == board[d];
+                check &&= board[BOARD_SIZE - 1] == board[d];
             }
             hasWon ||= check;
+            winner = check ? board[BOARD_SIZE - 1] : winner;
         }
 
-        return hasWon;
+        return [hasWon, winner];
     };
 
-    const checkBoardWin = (board: Board, boardIdx: number, player: Player) => {
-        const hasWon = checkWin(board);
-        setWinners((winners) => {
-            if (hasWon) {
-                winners[boardIdx] = PlayerMarker[player];
-            }
-            return winners;
-        });
+    const checkBoardDraw = (board: Board, boardIdx: number) => {
+        const isDrawn = checkDraw(board);
+        if (isDrawn) {
+            setWinners((winners) => {
+                winners[boardIdx] = PlayerMarker.DRAW;
+                return winners;
+            });
+        }
+        return isDrawn;
+    };
+
+    const checkBoardWin = (board: Board, boardIdx: number) => {
+        const [hasWon, winner] = checkWin(board);
+        if (hasWon) {
+            setWinners((winners) => {
+                winners[boardIdx] = winner;
+                return winners;
+            });
+        }
         return hasWon;
     };
 
@@ -122,23 +134,41 @@ const useBigBoard = () => {
             return board;
         });
         setBigBoard(newBigBoard);
-        if (!isDrawn(newBigBoard[boardIdx], boardIdx)) {
-            return checkBoardWin(newBigBoard[boardIdx], boardIdx, player);
-        }
-        return true;
+
+        return (
+            checkBoardWin(newBigBoard[boardIdx], boardIdx) ||
+            checkBoardDraw(newBigBoard[boardIdx], boardIdx)
+        );
+    };
+
+    const updateBoard = (newBigBoard: Board[]) => {
+        setBigBoard(newBigBoard);
+
+        setWinners((winners) => {
+            _.times(BOARD_LENGTH, (boardIdx: number) => {
+                const [_, winner] = checkWin(newBigBoard[boardIdx]);
+                winners[boardIdx] = winner;
+            });
+            return winners;
+        });
     };
 
     const resetBoard = () => {
         setBigBoard(
-            _.fill(
-                Array(BoardSize * BoardSize),
-                _.fill(Array(BoardSize * BoardSize), "")
-            )
+            _.fill(Array(BOARD_LENGTH), _.fill(Array(BOARD_LENGTH), ""))
         );
-        setWinners(_.fill(Array(BoardSize * BoardSize), ""));
+        setWinners(_.fill(Array(BOARD_LENGTH), ""));
     };
 
-    return { bigBoard, winners, checkWin, resetBoard, makeMove };
+    return {
+        bigBoard,
+        winners,
+        checkDraw,
+        checkWin,
+        updateBoard,
+        resetBoard,
+        makeMove
+    };
 };
 
 export default useBigBoard;

@@ -5,15 +5,17 @@ from .parameters import (
     BOARD_LEN,
     BOARD_SIZE,
     EMPTY_MARKER,
+    EMPTY_SYMBOL,
     PLAYER1_MARKER,
+    PLAYER1_WIN,
+    PLAYER2_WIN,
     PLAYER2_MARKER,
-    PLAYER2_SYMBOL,
 )
 
 
 def is_drawn(board: str) -> bool:
     for cell_idx in range(BOARD_LEN):
-        if board[cell_idx] == ".":
+        if board[cell_idx] == EMPTY_MARKER:
             return False
 
     return True
@@ -25,7 +27,7 @@ def check_win(board: str) -> Tuple[str, bool]:
 
     # check rows
     for r in range(0, BOARD_LEN, BOARD_SIZE):
-        if board[r] != ".":
+        if board[r] != EMPTY_MARKER:
             check = True
             for c in range(1, BOARD_SIZE):
                 check &= board[r] == board[r + c]
@@ -34,7 +36,7 @@ def check_win(board: str) -> Tuple[str, bool]:
 
     # check cols
     for c in range(BOARD_SIZE):
-        if board[c] != ".":
+        if board[c] != EMPTY_MARKER:
             check = True
             for r in range(BOARD_SIZE, BOARD_LEN, BOARD_SIZE):
                 check &= board[c] == board[c + r]
@@ -42,7 +44,7 @@ def check_win(board: str) -> Tuple[str, bool]:
             winner = board[c] if check else winner
 
     # check neg diag
-    if board[0] != ".":
+    if board[0] != EMPTY_MARKER:
         check = True
         for d in range(BOARD_SIZE + 1, BOARD_LEN, BOARD_SIZE + 1):
             check &= board[0] == board[d]
@@ -50,7 +52,7 @@ def check_win(board: str) -> Tuple[str, bool]:
         winner = board[0] if check else winner
 
     # check pos diag
-    if board[BOARD_SIZE - 1] != ".":
+    if board[BOARD_SIZE - 1] != EMPTY_MARKER:
         check = True
         for d in range(2 * BOARD_SIZE - 2, BOARD_LEN - BOARD_SIZE + 1, BOARD_SIZE - 1):
             check &= board[BOARD_SIZE - 1] == board[d]
@@ -60,13 +62,13 @@ def check_win(board: str) -> Tuple[str, bool]:
     return winner, has_won
 
 
-def check_game_win(big_board: List[str]):
+def check_game_win(big_board: List[str]) -> Tuple[str, bool]:
     winner = ""
     has_won = False
 
     # check rows
     for r in range(0, BOARD_LEN, BOARD_SIZE):
-        if big_board[r] == PLAYER1_MARKER or big_board[r] == PLAYER2_MARKER:
+        if big_board[r] == PLAYER1_WIN or big_board[r] == PLAYER2_WIN:
             check = True
             for c in range(1, BOARD_SIZE):
                 check &= big_board[r] == big_board[r + c]
@@ -75,7 +77,7 @@ def check_game_win(big_board: List[str]):
 
     # check cols
     for c in range(BOARD_SIZE):
-        if big_board[c] == PLAYER1_MARKER or big_board[c] == PLAYER2_MARKER:
+        if big_board[c] == PLAYER1_WIN or big_board[c] == PLAYER2_WIN:
             check = True
             for r in range(BOARD_SIZE, BOARD_LEN, BOARD_SIZE):
                 check &= big_board[c] == big_board[c + r]
@@ -83,7 +85,7 @@ def check_game_win(big_board: List[str]):
             winner = big_board[c] if check else winner
 
     # check neg diag
-    if big_board[0] == PLAYER1_MARKER or big_board[0] == PLAYER2_MARKER:
+    if big_board[0] == PLAYER1_WIN or big_board[0] == PLAYER2_WIN:
         check = True
         for d in range(BOARD_SIZE + 1, BOARD_LEN, BOARD_SIZE + 1):
             check &= big_board[0] == big_board[d]
@@ -92,8 +94,8 @@ def check_game_win(big_board: List[str]):
 
     # check pos diag
     if (
-        big_board[BOARD_SIZE - 1] == PLAYER1_MARKER
-        or big_board[BOARD_SIZE - 1] == PLAYER2_MARKER
+        big_board[BOARD_SIZE - 1] == PLAYER1_WIN
+        or big_board[BOARD_SIZE - 1] == PLAYER2_WIN
     ):
         check = True
         for d in range(2 * BOARD_SIZE - 2, BOARD_LEN - BOARD_SIZE + 1, BOARD_SIZE - 1):
@@ -104,25 +106,38 @@ def check_game_win(big_board: List[str]):
     return winner, has_won
 
 
-def make_move(big_board: str, board_idx: int, cell_idx: int) -> str:
-    from .utils import translate_board_idx, collapse_board
+def make_move(
+    big_board: str, board_idx: int, cell_idx: int, is_player1: bool
+) -> Tuple[str, int]:
+    from .utils import (
+        translate_board_idx,
+        collapse_board,
+        is_completed_board,
+        is_empty_board,
+    )
 
     translated_board_idx = translate_board_idx(big_board, board_idx)
     translated_cell_idx = translated_board_idx + cell_idx
 
-    if big_board[board_idx] == EMPTY_MARKER:
+    if is_empty_board(big_board[translated_board_idx]):
         big_board = (
-            big_board[:board_idx]
-            + ("." * cell_idx)
-            + PLAYER2_SYMBOL
-            + ("." * (BOARD_LEN - cell_idx - 1))
-            + big_board[board_idx + 1 :]
+            big_board[:translated_board_idx]
+            + (EMPTY_MARKER * cell_idx)
+            + (PLAYER1_MARKER if is_player1 else PLAYER2_MARKER)
+            + (EMPTY_MARKER * (BOARD_LEN - cell_idx - 1))
+            + big_board[translated_board_idx + 1 :]
         )
     else:
         big_board = (
             big_board[:translated_cell_idx]
-            + PLAYER2_SYMBOL
+            + (PLAYER1_MARKER if is_player1 else PLAYER2_MARKER)
             + big_board[translated_cell_idx + 1 :]
         )
 
-    return collapse_board(big_board)
+    new_big_board = collapse_board(big_board, translated_board_idx)
+    translated_board_idx = translate_board_idx(new_big_board, cell_idx)
+    new_board_idx = (
+        -1 if is_completed_board(new_big_board[translated_board_idx]) else cell_idx
+    )
+
+    return new_big_board, new_board_idx
