@@ -163,6 +163,7 @@ const useBigBoard = () => {
     return {
         bigBoard,
         winners,
+        setWinners,
         checkDraw,
         checkWin,
         updateBoard,

@@ -6,7 +6,6 @@ import useBigBoard from "./useBigBoard";
 import {
     Board,
     BOARD_LENGTH,
-    Marker,
     Player,
     PlayerMarker,
     PlayerType,
@@ -33,6 +32,7 @@ const useGame = () => {
     const {
         bigBoard,
         winners,
+        setWinners,
         checkDraw,
         checkWin,
         updateBoard,
@@ -46,42 +46,35 @@ const useGame = () => {
             setBigWinner(
                 winner === PlayerMarker.Player1 ? "Player1" : "Player2"
             );
-        }
-        if (checkDraw(winners)) {
+        } else if (checkDraw(winners)) {
             setBigWinner("DRAW");
+        } else {
+            if (playerTypes[player] !== "Human" && canAIPlay[player]) {
+                (async () => {
+                    const res = await fetch("http://127.0.0.1:8000/ai/", {
+                        method: "POST",
+                        headers: { "Content-Type": "text/plain" },
+                        body: `${bigBoard
+                            .map((board) =>
+                                board.map((marker) => marker || ".").join("")
+                            )
+                            .join("#")}$${activeBoard}$${playerTypes[player]}`
+                    });
+                    const body = (await res.text())
+                        .split("$")
+                        .map((val) => parseInt(val));
+                    const [boardIdx, cellIdx] = body;
+
+                    if (boardIdx == -1 || cellIdx === -1) {
+                        console.error("Error: invalid move attempt");
+                        return;
+                    }
+
+                    move(boardIdx, cellIdx);
+                })();
+            }
         }
-    }, [bigBoard]);
-
-    useEffect(() => {
-        if (
-            !bigWinner &&
-            playerTypes[player] !== "Human" &&
-            canAIPlay[player]
-        ) {
-            (async () => {
-                const res = await fetch("http://127.0.0.1:8000/ai/", {
-                    method: "POST",
-                    headers: { "Content-Type": "text/plain" },
-                    body: `${bigBoard
-                        .map((board) =>
-                            board.map((marker) => marker || ".").join("")
-                        )
-                        .join("#")}$${activeBoard}$${playerTypes[player]}`
-                });
-                const body = (await res.text())
-                    .split("$")
-                    .map((val) => parseInt(val));
-                const [boardIdx, cellIdx] = body;
-
-                if (boardIdx == -1 || cellIdx === -1) {
-                    console.error("Error: invalid move attempt");
-                    return;
-                }
-
-                move(boardIdx, cellIdx);
-            })();
-        }
-    }, [playerTypes, player, bigWinner, canAIPlay]);
+    }, [bigBoard, playerTypes, player, bigWinner, canAIPlay]);
 
     const move = (boardIdx: number, cellIdx: number) => {
         const finishedBoard = makeMove(player, boardIdx, cellIdx);
@@ -140,8 +133,30 @@ const useGame = () => {
                     )
             );
 
+        const newWinners = newBigBoard.map((board) => {
+            const [hasWon, winner] = checkWin(board);
+            if (hasWon) {
+                return winner;
+            } else if (checkDraw(board)) {
+                return PlayerMarker.DRAW;
+            } else {
+                return "";
+            }
+        });
+
         updatePlayer(newBigBoard);
         updateBoard(newBigBoard);
+        setWinners(newWinners);
+        setBigWinner(() => {
+            const [hasWon, winner] = checkWin(winners);
+            if (hasWon) {
+                return winner === PlayerMarker.Player1 ? "Player1" : "Player2";
+            } else if (checkDraw(winners)) {
+                return "DRAW";
+            } else {
+                return null;
+            }
+        });
         setActiveBoard(boardIdx);
     };
 

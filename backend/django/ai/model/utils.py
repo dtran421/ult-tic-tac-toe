@@ -33,19 +33,22 @@ def check_empty(board: str) -> bool:
 
 
 def compress(big_board: List[str]) -> str:
-    for board_idx in range(BOARD_LEN):
-        if check_empty(big_board[board_idx]):
-            big_board[board_idx] = EMPTY_SYMBOL
+    new_big_board = ""
+    for board in big_board:
+        if check_empty(board):
+            new_big_board += EMPTY_SYMBOL
         else:
-            winner, has_won = check_win(big_board[board_idx])
+            winner, has_won = check_win(board)
             if has_won:
-                big_board[board_idx] = (
+                new_big_board += (
                     PLAYER1_WIN if winner == PLAYER1_MARKER else PLAYER2_WIN
                 )
-            elif is_drawn(big_board[board_idx]):
-                big_board[board_idx] = DRAW_SYMBOL
+            elif is_drawn(board):
+                new_big_board += DRAW_SYMBOL
+            else:
+                new_big_board += board
 
-    return "".join(big_board)
+    return new_big_board
 
 
 def decompress(big_board: str) -> List[str]:

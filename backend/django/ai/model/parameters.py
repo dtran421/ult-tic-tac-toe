@@ -25,5 +25,5 @@ EMPTY_SYMBOL = "@"
 """
 Minimax hyperparameters
 """
-PLIES = 6  # needs to be odd (to account for player 1 moving first)
+PLIES = 4
 DEPTH = PLIES  # ==> # of plies

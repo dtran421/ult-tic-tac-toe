@@ -5,7 +5,6 @@ from .parameters import (
     BOARD_LEN,
     BOARD_SIZE,
     EMPTY_MARKER,
-    EMPTY_SYMBOL,
     PLAYER1_MARKER,
     PLAYER1_WIN,
     PLAYER2_WIN,
@@ -62,9 +61,9 @@ def check_win(board: str) -> Tuple[str, bool]:
     return winner, has_won
 
 
-def check_game_win(big_board: List[str]) -> Tuple[str, bool]:
-    winner = ""
+def check_game_win(big_board: List[str]) -> Tuple[bool, str]:
     has_won = False
+    winner = ""
 
     # check rows
     for r in range(0, BOARD_LEN, BOARD_SIZE):
@@ -103,7 +102,7 @@ def check_game_win(big_board: List[str]) -> Tuple[str, bool]:
         has_won |= check
         winner = big_board[BOARD_SIZE - 1] if check else winner
 
-    return winner, has_won
+    return has_won, winner
 
 
 def make_move(

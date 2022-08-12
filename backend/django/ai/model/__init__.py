@@ -1,3 +1,4 @@
+import math
 from typing import List, Tuple
 
 from .parameters import DEPTH
@@ -17,8 +18,14 @@ def determine_move(
 
     elif ai_mode == "Minimax":
         is_maximizing = is_player1("".join(big_board))
-        _, best_move = minimax(new_big_board, board_idx, DEPTH, is_maximizing)
+        best_move, score = minimax(
+            new_big_board, board_idx, DEPTH, -math.inf, math.inf, is_maximizing
+        )
+
+        print(f"chosen move: {best_move}")
+        print(f"eval: {score}")
+
         return best_move
 
     else:
-        print("error: invalid ai mode!")
+        raise Exception("Error: invalid ai mode!")

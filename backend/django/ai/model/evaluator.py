@@ -1,5 +1,5 @@
 import math
-from typing import List
+from typing import List, Tuple
 
 from .parameters import (
     BOARD_LEN,
@@ -12,7 +12,28 @@ from .parameters import (
     PLAYER2_WIN,
 )
 from .utils import decompress
-from .game import check_game_win, check_win
+from .game import check_game_win, make_move
+
+
+def heuristics_sort(
+    big_board: str, moves: List[Tuple[int, int]], is_maximizing: bool
+) -> List[Tuple[int, int]]:
+    sorted_moves = []
+    for move in moves:
+        new_big_board, _ = make_move(big_board, move[0], move[1], is_maximizing)
+
+        score = 0
+
+        decompressed_big_board = decompress(new_big_board)
+        has_won, winner = check_game_win(decompressed_big_board)
+        if has_won:
+            score = math.inf if winner == PLAYER1_WIN else -math.inf
+        else:
+            score = heuristic(decompressed_big_board, is_maximizing)
+
+        sorted_moves.append((score, move))
+
+    return [i[1] for i in sorted(sorted_moves, reverse=is_maximizing)]
 
 
 def compute_board_score_potential(
@@ -139,13 +160,7 @@ def heuristic(big_board: str, is_maximizing: bool) -> int:
     """
     sign of returned value based on Player 1 (maximizing player = positive), AI is Player 2 (minimizing player = negative)
     """
-    big_board = decompress(big_board)
-
     score = 0
-
-    winner, has_won = check_game_win(big_board)
-    if has_won:
-        return math.inf if winner == PLAYER1_WIN else -math.inf
 
     for board_idx in range(BOARD_LEN):
         if big_board[board_idx] == PLAYER1_WIN:
