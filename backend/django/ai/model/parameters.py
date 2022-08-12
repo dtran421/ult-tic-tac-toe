@@ -1,3 +1,6 @@
+"""
+Board markers (in ubsf input)
+"""
 PLAYER1_MARKER = "X"
 PLAYER2_MARKER = "O"
 EMPTY_MARKER = "."
@@ -20,16 +23,7 @@ EMPTY_SYMBOL = "@"
 
 
 """
-AI strategies
-    0 = random
-    1 = minimax
-    2 = monte carlo
-"""
-MODE = 1
-
-
-"""
 Minimax hyperparameters
 """
-PLIES = 3  # needs to be odd (to account for player 1 moving first)
+PLIES = 6  # needs to be odd (to account for player 1 moving first)
 DEPTH = PLIES  # ==> # of plies

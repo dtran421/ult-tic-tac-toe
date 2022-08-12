@@ -1,34 +1,26 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import {
     BOARD_LENGTH,
     BOARD_SIZE,
     Marker,
     Player,
-    PlayerMarker
+    PlayerMarker,
+    PlayerType
 } from "../../types";
+import GameContext from "../GameContext";
 
 interface CellProps {
     boardIdx: number;
     cellIdx: number;
     marker: Marker;
     active: boolean;
-    player: Player;
-    AIMode: boolean;
     winner: Marker;
-    move: (boardIdx: number, cellIdx: number) => void;
 }
 
-const Cell = ({
-    boardIdx,
-    cellIdx,
-    marker,
-    active,
-    player,
-    AIMode,
-    winner,
-    move
-}: CellProps) => {
+const Cell = ({ boardIdx, cellIdx, marker, active, winner }: CellProps) => {
+    const { playerTypes, player, move } = useContext(GameContext);
+
     const [displayMarker, setDisplayMarker] = useState(marker);
     useEffect(() => {
         setDisplayMarker(marker);
@@ -49,21 +41,23 @@ const Cell = ({
                     move(boardIdx, cellIdx);
                 }}
                 onMouseEnter={() => {
-                    setDisplayMarker(PlayerMarker[player]);
+                    if (displayMarker === "") {
+                        setDisplayMarker(PlayerMarker[player]);
+                    }
                 }}
                 onMouseLeave={() => {
-                    setDisplayMarker(marker);
+                    setTimeout(() => setDisplayMarker(marker), 150);
                 }}
                 className={`w-12 h-12 ${
                     player === "Player1"
                         ? "hover:bg-sky-400"
                         : "hover:bg-rose-400"
-                } disabled:bg-transparent text-white text-3xl font-semibold rounded-xl transition duration-200 ease-linear`}
+                } enabled:opacity-0 enabled:hover:opacity-100 disabled:opacity-100 disabled:bg-transparent text-white text-3xl font-semibold rounded-xl transition duration-100 ease-linear`}
                 disabled={
                     marker !== "" ||
                     winner !== "" ||
                     !active ||
-                    (AIMode && player === "Player2")
+                    playerTypes[player] !== "Human"
                 }
             >
                 {displayMarker}

@@ -4,11 +4,24 @@ from .parameters import (
     EMPTY_MARKER,
     PLAYER1_MARKER,
     PLAYER1_WIN,
+    PLAYER2_MARKER,
     PLAYER2_WIN,
     EMPTY_SYMBOL,
     DRAW_SYMBOL,
 )
 from .game import BOARD_LEN, is_drawn, check_win
+
+
+def is_player1(big_board: str) -> bool:
+    p1_markers = p2_markers = 0
+
+    for marker in big_board:
+        if marker == PLAYER1_MARKER:
+            p1_markers += 1
+        if marker == PLAYER2_MARKER:
+            p2_markers += 1
+
+    return p1_markers == p2_markers
 
 
 def check_empty(board: str) -> bool:

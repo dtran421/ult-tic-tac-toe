@@ -8,27 +8,22 @@ import {
     BOARD_SIZE,
     Marker,
     Player,
+    PlayerType,
     Winner
 } from "../../types";
 
 interface BigBoardProps {
-    player: Player;
-    AIMode: boolean;
     bigBoard: Board[];
     activeBoard: number;
     bigWinner: Winner | null;
     winners: Marker[];
-    move: (boardIdx: number, cellIdx: number) => void;
 }
 
 const BigBoard = ({
-    player,
-    AIMode,
     bigBoard,
     activeBoard,
     bigWinner,
-    winners,
-    move
+    winners
 }: BigBoardProps) => {
     return (
         <div className="max-w-2xl relative overflow-hidden flex justify-center bg-gray-300/30 rounded-xl p-2 mx-auto">
@@ -47,10 +42,7 @@ const BigBoard = ({
                         <BoardGrid
                             {...{
                                 board,
-                                boardIdx,
-                                player,
-                                AIMode,
-                                move
+                                boardIdx
                             }}
                             winner={winners[boardIdx]}
                             active={

@@ -1,26 +1,19 @@
+import { useContext } from "react";
+
 import Cell from "./Cell";
 
-import { Board, Marker, Player, PlayerMarker } from "../../types";
+import { Board, Marker, Player, PlayerMarker, PlayerType } from "../../types";
+import GameContext from "../GameContext";
 
 interface BoardProps {
     board: Board;
     boardIdx: number;
     active: boolean;
     winner: Marker;
-    player: Player;
-    AIMode: boolean;
-    move: (boardIdx: number, cellIdx: number) => void;
 }
 
-const BoardGrid = ({
-    board,
-    boardIdx,
-    active,
-    winner,
-    player,
-    AIMode,
-    move
-}: BoardProps) => {
+const BoardGrid = ({ board, boardIdx, active, winner }: BoardProps) => {
+    const { player } = useContext(GameContext);
     return (
         <div
             className={`relative overflow-hidden flex justify-center bg-gray-300/30 rounded-xl p-2 border-4 ${
@@ -53,10 +46,7 @@ const BoardGrid = ({
                             cellIdx,
                             marker,
                             active,
-                            player,
-                            AIMode,
-                            winner,
-                            move
+                            winner
                         }}
                     />
                 ))}

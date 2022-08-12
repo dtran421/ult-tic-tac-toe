@@ -9,13 +9,24 @@ import {
     Marker,
     Player,
     PlayerMarker,
+    PlayerType,
     Winner
 } from "../../types";
 
 const useGame = () => {
-    const [AIMode, toggleAIMode] = useState(true);
+    const [playerTypes, setPlayerType] = useState<{
+        [key in Player]: PlayerType;
+    }>({
+        Player1: "Human",
+        Player2: "Minimax"
+    });
 
     const [player, togglePlayer] = useState<Player>("Player1");
+    const [canAIPlay, toggleAIPlay] = useState({
+        Player1: true,
+        Player2: true
+    });
+
     const [bigWinner, setBigWinner] = useState<Winner | null>(null);
     const [activeBoard, setActiveBoard] = useState<number>(-1);
 
@@ -42,7 +53,11 @@ const useGame = () => {
     }, [bigBoard]);
 
     useEffect(() => {
-        if (AIMode && !bigWinner && player === "Player2") {
+        if (
+            !bigWinner &&
+            playerTypes[player] !== "Human" &&
+            canAIPlay[player]
+        ) {
             (async () => {
                 const res = await fetch("http://127.0.0.1:8000/ai/", {
                     method: "POST",
@@ -51,7 +66,7 @@ const useGame = () => {
                         .map((board) =>
                             board.map((marker) => marker || ".").join("")
                         )
-                        .join("#")}$${activeBoard}`
+                        .join("#")}$${activeBoard}$${playerTypes[player]}`
                 });
                 const body = (await res.text())
                     .split("$")
@@ -59,14 +74,14 @@ const useGame = () => {
                 const [boardIdx, cellIdx] = body;
 
                 if (boardIdx == -1 || cellIdx === -1) {
-                    console.log("Error: invalid move attempt");
+                    console.error("Error: invalid move attempt");
                     return;
                 }
 
                 move(boardIdx, cellIdx);
             })();
         }
-    }, [AIMode, player]);
+    }, [playerTypes, player, bigWinner, canAIPlay]);
 
     const move = (boardIdx: number, cellIdx: number) => {
         const finishedBoard = makeMove(player, boardIdx, cellIdx);
@@ -96,7 +111,7 @@ const useGame = () => {
             })
         );
 
-        togglePlayer(p1Markers > p2Markers ? "Player2" : "Player1");
+        togglePlayer(p1Markers === p2Markers ? "Player1" : "Player2");
     };
 
     const loadBoard = (ubsfBoard: string) => {
@@ -109,25 +124,25 @@ const useGame = () => {
             boardIdx < -1 ||
             boardIdx >= BOARD_LENGTH
         ) {
-            console.log("error: invalid ubsf string!");
+            console.error("Error: invalid ubsf string!");
         }
 
-        const newBigBoard = bigBoardStr.split("#").map((board) => {
-            const newBoard: Marker[] = [];
-            for (let char of board) {
-                newBoard.push(
-                    char === PlayerMarker.Player1 ||
+        const newBigBoard = bigBoardStr
+            .split("#")
+            .map((board) =>
+                board
+                    .split("")
+                    .map((char) =>
+                        char === PlayerMarker.Player1 ||
                         char === PlayerMarker.Player2
-                        ? char
-                        : ""
-                );
-            }
+                            ? char
+                            : ""
+                    )
+            );
 
-            return newBoard;
-        });
-
-        updateBoard(newBigBoard);
         updatePlayer(newBigBoard);
+        updateBoard(newBigBoard);
+        setActiveBoard(boardIdx);
     };
 
     const clear = () => {
@@ -138,8 +153,10 @@ const useGame = () => {
     };
 
     return {
-        AIMode,
-        toggleAIMode,
+        playerTypes,
+        setPlayerType,
+        canAIPlay,
+        toggleAIPlay,
         bigBoard,
         activeBoard,
         bigWinner,

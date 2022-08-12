@@ -1,6 +1,7 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 
+import datetime
 from . import model
 
 # Create your views here.
@@ -8,16 +9,17 @@ from . import model
 
 @csrf_exempt
 def index(request):
-    body = request.body.decode("utf-8")
-    print(f"ubsf: {body}")
+    params = request.body.decode("utf-8").split("$")
+    ubsf_str = "$".join(params[:-1])
+    print(f"ubsf: {ubsf_str}")
 
     with open("debug_log.txt", "a") as debug_log:
-        debug_log.write(body + "\n")
+        debug_log.write(f"[{datetime.datetime.now()}] {ubsf_str}")
+        debug_log.write("\n")
 
-    params = body.split("$")
-    big_board, board_idx = params[0].split("#"), int(params[1])
+    big_board, board_idx, ai_type = params[0].split("#"), int(params[1]), params[2]
 
-    board_idx, cell_idx = model.determine_move(big_board, board_idx)
+    board_idx, cell_idx = model.determine_move(big_board, board_idx, ai_type)
     print(f"chosen move: ({board_idx}, {cell_idx})")
 
     return HttpResponse(f"{board_idx}${cell_idx}")
