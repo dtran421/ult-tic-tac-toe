@@ -38,7 +38,7 @@ def compress(big_board: List[str]) -> str:
         if check_empty(board):
             new_big_board += EMPTY_SYMBOL
         else:
-            winner, has_won = check_win(board)
+            has_won, winner = check_win(board)
             if has_won:
                 new_big_board += (
                     PLAYER1_WIN if winner == PLAYER1_MARKER else PLAYER2_WIN
@@ -91,6 +91,13 @@ def translate_board_idx(big_board: str, board_idx: int) -> int:
 
 
 def get_open_cells(big_board: str, board_idx: int) -> List[Tuple[int, int]]:
+    """
+    Accepts a compressed big board and active board index as parameters and
+    returns a list of (board_i, cell_i) tuples denoting possible valid moves 
+    for the board at the given index (or all boards if index == -1).
+
+    Assumes that the board index has been checked for validity prior.
+    """
     cells = []
 
     if board_idx == -1:
@@ -120,7 +127,7 @@ def get_open_cells(big_board: str, board_idx: int) -> List[Tuple[int, int]]:
 
 
 def collapse_board(big_board: str, translated_board_idx: int) -> str:
-    winner, has_won = check_win(
+    has_won, winner = check_win(
         big_board[translated_board_idx : translated_board_idx + BOARD_LEN]
     )
     if has_won:

@@ -1,10 +1,15 @@
 import math
 from typing import List, Tuple
 
+
 from .parameters import DEPTH
 from .utils import compress, is_player1
+
+
 from .random_move import random_move
 from .minimax import minimax
+from .evaluator import heuristic
+from .mcts import monte_carlo
 
 
 def determine_move(
@@ -24,6 +29,15 @@ def determine_move(
 
         print(f"chosen move: {best_move}")
         print(f"eval: {score}")
+
+        return best_move
+
+    elif ai_mode == "Monte Carlo":
+        is_player_1 = is_player1("".join(big_board))
+        best_move = monte_carlo(new_big_board, board_idx, is_player_1)
+
+        print(f"chosen move: {best_move}")
+        print(f"eval: {heuristic(big_board, is_player_1)}")
 
         return best_move
 

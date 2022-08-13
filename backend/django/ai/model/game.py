@@ -20,9 +20,14 @@ def is_drawn(board: str) -> bool:
     return True
 
 
-def check_win(board: str) -> Tuple[str, bool]:
-    winner = ""
+def check_win(board: str) -> Tuple[bool, str]:
+    """
+    Determines if a small board is won.
+
+    Returns a bool has_won and str winner indicating the marker ("X" or "O") of the winning player.
+    """
     has_won = False
+    winner = ""
 
     # check rows
     for r in range(0, BOARD_LEN, BOARD_SIZE):
@@ -58,7 +63,7 @@ def check_win(board: str) -> Tuple[str, bool]:
         has_won |= check
         winner = board[BOARD_SIZE - 1] if check else winner
 
-    return winner, has_won
+    return has_won, winner
 
 
 def check_game_win(big_board: List[str]) -> Tuple[bool, str]:
@@ -106,7 +111,7 @@ def check_game_win(big_board: List[str]) -> Tuple[bool, str]:
 
 
 def make_move(
-    big_board: str, board_idx: int, cell_idx: int, is_player1: bool
+    big_board: str, board_idx: int, cell_idx: int, is_player_1: bool
 ) -> Tuple[str, int]:
     from .utils import (
         translate_board_idx,
@@ -122,14 +127,14 @@ def make_move(
         big_board = (
             big_board[:translated_board_idx]
             + (EMPTY_MARKER * cell_idx)
-            + (PLAYER1_MARKER if is_player1 else PLAYER2_MARKER)
+            + (PLAYER1_MARKER if is_player_1 else PLAYER2_MARKER)
             + (EMPTY_MARKER * (BOARD_LEN - cell_idx - 1))
             + big_board[translated_board_idx + 1 :]
         )
     else:
         big_board = (
             big_board[:translated_cell_idx]
-            + (PLAYER1_MARKER if is_player1 else PLAYER2_MARKER)
+            + (PLAYER1_MARKER if is_player_1 else PLAYER2_MARKER)
             + big_board[translated_cell_idx + 1 :]
         )
 

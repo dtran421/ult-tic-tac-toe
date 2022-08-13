@@ -25,5 +25,11 @@ EMPTY_SYMBOL = "@"
 """
 Minimax hyperparameters
 """
-PLIES = 4
+PLIES = 6
 DEPTH = PLIES  # ==> # of plies
+
+
+"""
+Monte Carlo hyperparameters
+"""
+SEARCH_TIME = 10 # ==> secs to search
