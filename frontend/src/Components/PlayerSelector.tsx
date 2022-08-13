@@ -1,21 +1,18 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useContext } from "react";
+
 import { Player, PlayerType, PLAYER_TYPES } from "../../types";
+import { PlayerContext } from "../Contexts";
 
 interface PlayerButtonProps {
     text: string;
     active: boolean;
     player: Player;
-    setPlayerType: Dispatch<SetStateAction<{ [key in Player]: PlayerType }>>;
-    toggleAIPlay: Dispatch<SetStateAction<{ [key in Player]: boolean }>>;
 }
 
-const PlayerButton = ({
-    text,
-    active,
-    player,
-    setPlayerType,
-    toggleAIPlay
-}: PlayerButtonProps) => {
+const PlayerButton = ({ text, active, player }: PlayerButtonProps) => {
+    const { playerTypes, setPlayerType, toggleAIPlay } =
+        useContext(PlayerContext);
+
     let buttonClass = "";
     if (active) {
         buttonClass =
@@ -28,10 +25,10 @@ const PlayerButton = ({
     return (
         <button
             onClick={() => {
-                setPlayerType((playerTypes) => ({
+                setPlayerType({
                     ...playerTypes,
                     [player]: text as PlayerType
-                }));
+                });
                 if (player === "Player1") {
                     toggleAIPlay({
                         Player1: text === "Human",
@@ -53,17 +50,12 @@ const PlayerButton = ({
 
 interface PlayerSelectorType {
     player: Player;
-    activeType: PlayerType;
-    setPlayerType: Dispatch<SetStateAction<{ [key in Player]: PlayerType }>>;
-    toggleAIPlay: Dispatch<SetStateAction<{ [key in Player]: boolean }>>;
 }
 
-const PlayerSelector = ({
-    player,
-    activeType,
-    setPlayerType,
-    toggleAIPlay
-}: PlayerSelectorType) => {
+const PlayerSelector = ({ player }: PlayerSelectorType) => {
+    const { playerTypes } = useContext(PlayerContext);
+    const activeType = playerTypes[player];
+
     return (
         <div
             className={`grid grid-cols-2 ${
@@ -73,7 +65,7 @@ const PlayerSelector = ({
             {PLAYER_TYPES.map((type) => (
                 <PlayerButton
                     key={type}
-                    {...{ player, setPlayerType, toggleAIPlay }}
+                    {...{ player }}
                     text={type}
                     active={type === activeType}
                 />

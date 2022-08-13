@@ -114,7 +114,7 @@ def compute_game_score_potential(
             if p1_boards == 1:
                 score += 150
 
-        if p1_boards == 2 and p2_boards == 1:
+        if p1_boards == 2:
             score -= 150
 
     return score
@@ -161,6 +161,10 @@ def heuristic(big_board: str, is_maximizing: bool) -> int:
     sign of returned value based on Player 1 (maximizing player = positive), AI is Player 2 (minimizing player = negative)
     """
     score = 0
+
+    has_won, winner = check_game_win(big_board)
+    if has_won:
+        return None, math.inf if winner == PLAYER1_WIN else -math.inf
 
     for board_idx in range(BOARD_LEN):
         if big_board[board_idx] == PLAYER1_WIN:

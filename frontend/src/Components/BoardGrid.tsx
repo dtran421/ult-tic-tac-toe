@@ -3,7 +3,7 @@ import { useContext } from "react";
 import Cell from "./Cell";
 
 import { Board, Marker, Player, PlayerMarker, PlayerType } from "../../types";
-import GameContext from "../GameContext";
+import { GameContext } from "../Contexts";
 
 interface BoardProps {
     board: Board;

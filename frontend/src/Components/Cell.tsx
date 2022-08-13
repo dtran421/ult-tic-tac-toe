@@ -8,7 +8,7 @@ import {
     PlayerMarker,
     PlayerType
 } from "../../types";
-import GameContext from "../GameContext";
+import { GameContext } from "../Contexts";
 
 interface CellProps {
     boardIdx: number;

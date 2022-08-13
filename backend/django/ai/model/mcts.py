@@ -33,10 +33,12 @@ def backprop(node: TSNode, sim_winner: str):
 
 def select_best_move(root: TSNode):
     best_move, max_sims = None, 0
+    print(root.num_sims)
     for move in root.children:
         node = root.children[move]
+        print(f"move: {move}, ratio: {node.wins} / {node.num_sims}")
         if node.num_sims > max_sims:
-            best_move = move
+            best_move, max_sims = move, node.num_sims
 
     return best_move
 

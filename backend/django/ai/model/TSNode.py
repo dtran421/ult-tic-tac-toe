@@ -3,8 +3,8 @@ import random
 from typing import Tuple, Union
 
 from .parameters import PLAYER1_MARKER, PLAYER2_MARKER
-from .utils import get_open_cells
-from .game import check_win, is_drawn, make_move
+from .utils import decompress, get_open_cells
+from .game import check_game_draw, check_game_win, is_drawn, make_move
 
 
 class TSNode:
@@ -51,7 +51,8 @@ class TSNode:
         return new_child
 
     def is_fully_expanded(self) -> bool:
-        return len(self.children) == len(get_open_cells(self.big_board, self.board_idx))
+        possible_moves = get_open_cells(self.big_board, self.board_idx)
+        return possible_moves and len(self.children) == len(possible_moves)
 
     def compute_uct(self) -> float:
         """
@@ -98,5 +99,6 @@ class TSNode:
         return TSNode(self, new_big_board, new_board_idx, not self.is_player_1)
 
     def is_terminal(self) -> Tuple[bool, str]:
-        has_won, winner = check_win(self.big_board)
-        return has_won or is_drawn(self.big_board), winner
+        decompressed_big_board = decompress(self.big_board)
+        has_won, winner = check_game_win(decompressed_big_board)
+        return has_won or check_game_draw(self.big_board), winner

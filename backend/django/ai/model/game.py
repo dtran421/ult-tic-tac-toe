@@ -13,6 +13,10 @@ from .parameters import (
 
 
 def is_drawn(board: str) -> bool:
+    """
+    Determines if a small board is drawn. Must be called after check_win since
+    it checks if there are any more empty cells.
+    """
     for cell_idx in range(BOARD_LEN):
         if board[cell_idx] == EMPTY_MARKER:
             return False
@@ -66,7 +70,26 @@ def check_win(board: str) -> Tuple[bool, str]:
     return has_won, winner
 
 
+def check_game_draw(big_board: List[str]) -> Tuple[bool, str]:
+    """
+    Determines if a (compressed) big board is drawn. Must be called after check_game_win since
+    it checks if there are any more empty boards.
+    """
+    from .utils import is_completed_board
+
+    for board_idx in range(BOARD_LEN):
+        if not is_completed_board(big_board[board_idx]):
+            return False
+
+    return True
+
+
 def check_game_win(big_board: List[str]) -> Tuple[bool, str]:
+    """
+    Determines if a (compressed) big board is won.
+
+    Returns a bool has_won and str winner indicating the marker ("X" or "O") of the winning player.
+    """
     has_won = False
     winner = ""
 
