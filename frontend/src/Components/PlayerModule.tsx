@@ -19,7 +19,7 @@ const PlayerModule = ({ player, isPlaying, canAIPlay }: PlayerModuleProps) => {
         if (isPlaying && canAIPlay[player]) {
             if (playerTypes[player] === "Monte Carlo") {
                 if (time === 0) {
-                    setTime(10);
+                    setTime(20);
                 }
                 setTimeout(() => setTime(time - 1), 1000);
             }

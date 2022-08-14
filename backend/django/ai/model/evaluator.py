@@ -156,9 +156,14 @@ def compute_win_potential(big_board: List[str], is_maximizing: bool) -> int:
     return score
 
 
-def heuristic(big_board: str, is_maximizing: bool) -> int:
+def heuristic(big_board: List[str], is_maximizing: bool) -> int:
     """
-    sign of returned value based on Player 1 (maximizing player = positive), AI is Player 2 (minimizing player = negative)
+    Receives a (decompressed) big board and whether the player is maximizing (player 1) as inputs. 
+    Evaluates the score for a given big board state.
+
+    The sign of the returned value is based on the player.
+    
+    Player 1 (maximizing player = positive), Player 2 (minimizing player = negative)
     """
     score = 0
 

@@ -62,7 +62,8 @@ def minimax(
             break
 
         if depth == DEPTH and board_idx != -1:
-            print(f"move: {(board_i, cell_i)}, eval: {new_score}")
+            # print(f"move: {(board_i, cell_i)}, eval: {new_score}")
+            pass
 
         if is_maximizing:
             alpha = max(alpha, score)

@@ -2,6 +2,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 
 import datetime
+
+from . import simulator
 from . import model
 
 # Create your views here.
@@ -19,7 +21,14 @@ def index(request):
 
     big_board, board_idx, ai_type = params[0].split("#"), int(params[1]), params[2]
 
-    board_idx, cell_idx = model.determine_move(big_board, board_idx, ai_type)
+    (board_idx, cell_idx), score = model.determine_move(big_board, board_idx, ai_type)
     print(f"chosen move: ({board_idx}, {cell_idx})")
+    print(f"eval: {score}")
 
     return HttpResponse(f"{board_idx}${cell_idx}")
+
+
+@csrf_exempt
+def simulate(_):
+    simulator.run_simulation()
+    return HttpResponse(f"hello world!")

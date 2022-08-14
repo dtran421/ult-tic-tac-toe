@@ -72,7 +72,7 @@ def check_win(board: str) -> Tuple[bool, str]:
 
 def check_game_draw(big_board: List[str]) -> Tuple[bool, str]:
     """
-    Determines if a (compressed) big board is drawn. Must be called after check_game_win since
+    Determines if a (decompressed) big board is drawn. Must be called after check_game_win since
     it checks if there are any more empty boards.
     """
     from .utils import is_completed_board
@@ -86,9 +86,9 @@ def check_game_draw(big_board: List[str]) -> Tuple[bool, str]:
 
 def check_game_win(big_board: List[str]) -> Tuple[bool, str]:
     """
-    Determines if a (compressed) big board is won.
+    Determines if a (decompressed) big board is won.
 
-    Returns a bool has_won and str winner indicating the marker ("X" or "O") of the winning player.
+    Returns a bool has_won and str winner indicating the marker ("X" or "O") of the winning player, or "" if drawn or otherwise.
     """
     has_won = False
     winner = ""

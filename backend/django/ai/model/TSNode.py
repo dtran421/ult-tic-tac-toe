@@ -41,7 +41,6 @@ class TSNode:
             return None
         board_i, cell_i = random.choice(uninitialized_moves)
 
-        # TODO: implement feature to prevent terminal nodes (game-ending) from being added to tree
         new_big_board, new_board_idx = make_move(
             self.big_board, board_i, cell_i, self.is_player_1
         )
@@ -71,7 +70,6 @@ class TSNode:
 
     def update_stats(self, sim_winner: str):
         self.num_sims += 1
-        self.parent.num_sims += 1
 
         if (sim_winner == PLAYER1_MARKER and self.is_player_1) or (
             sim_winner == PLAYER2_MARKER and not self.is_player_1
