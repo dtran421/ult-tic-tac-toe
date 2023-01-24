@@ -15,26 +15,26 @@ def run_simulation():
 
     init_board = ".........#.........#.........#.........#.........#.........#.........#.........#.........$-1"
     params = init_board.split("$")
-    new_big_board, board_idx = params[0].split("#"), int(params[1])
+    big_board = params[0].split("#")
+    board_idx = int(params[1])
 
-    decompressed_big_board = decompress(compress(new_big_board))
+    decompressed_big_board = decompress(compress(big_board))
     has_won, winner = check_game_win(decompressed_big_board)
 
     results = np.zeros(NUM_EPOCHS)
     for epoch in range(1, NUM_EPOCHS + 1):
         while not has_won:
             (board_i, cell_i), _ = determine_move(
-                new_big_board, board_idx, player1 if is_player_1 else player2
+                big_board, board_idx, player1 if is_player_1 else player2
             )
 
             marker = PLAYER1_MARKER if is_player_1 else PLAYER2_MARKER
-            new_big_board[board_i] = (
-                new_big_board[board_i][:cell_i]
-                + marker
-                + new_big_board[board_i][cell_i + 1 :]
-            )
 
-            decompressed_big_board = decompress(compress(new_big_board))
+            old_board_i = big_board[board_i]
+            new_board_i = old_board_i[:cell_i] + marker + old_board_i[cell_i + 1:]
+            big_board[board_i] = new_board_i  # type: ignore
+
+            decompressed_big_board = decompress(compress(big_board))
             completed_board = is_completed_board(decompressed_big_board[cell_i])
             board_idx = cell_i if not completed_board else -1
 

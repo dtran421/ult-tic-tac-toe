@@ -156,20 +156,20 @@ def compute_win_potential(big_board: List[str], is_maximizing: bool) -> int:
     return score
 
 
-def heuristic(big_board: List[str], is_maximizing: bool) -> int:
+def heuristic(big_board: List[str], is_maximizing: bool) -> float:
     """
     Receives a (decompressed) big board and whether the player is maximizing (player 1) as inputs. 
     Evaluates the score for a given big board state.
 
     The sign of the returned value is based on the player.
-    
+
     Player 1 (maximizing player = positive), Player 2 (minimizing player = negative)
     """
     score = 0
 
     has_won, winner = check_game_win(big_board)
     if has_won:
-        return None, math.inf if winner == PLAYER1_WIN else -math.inf
+        return math.inf if winner == PLAYER1_WIN else -math.inf
 
     for board_idx in range(BOARD_LEN):
         if big_board[board_idx] == PLAYER1_WIN:

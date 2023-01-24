@@ -7,15 +7,15 @@ from .utils import compress, decompress, is_player1
 from .game import make_move
 
 
-from .random_move import random_move
-from .minimax import minimax
+from .random import random_move
+from .minimax import minimax_move
 from .evaluator import heuristic
 from .mcts import monte_carlo
 
 
 def determine_move(
     big_board: List[str], board_idx: int, ai_mode: str
-) -> Tuple[int, int]:
+) -> Tuple[Tuple[int, int], float]:
     is_player_1 = is_player1("".join(big_board))
     new_big_board = compress(big_board)
     # print(f"compressed board: {new_big_board}")
@@ -29,7 +29,7 @@ def determine_move(
         return move, score
 
     elif ai_mode == "Minimax":
-        best_move, score = minimax(
+        best_move, score = minimax_move(
             new_big_board, board_idx, DEPTH, -math.inf, math.inf, is_player_1
         )
 

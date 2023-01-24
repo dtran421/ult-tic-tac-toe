@@ -70,11 +70,12 @@ def check_win(board: str) -> Tuple[bool, str]:
     return has_won, winner
 
 
-def check_game_draw(big_board: List[str]) -> Tuple[bool, str]:
+def check_game_draw(big_board: List[str]) -> bool:
     """
     Determines if a (decompressed) big board is drawn. Must be called after check_game_win since
     it checks if there are any more empty boards.
     """
+    # TODO: fix cyclical dependency
     from .utils import is_completed_board
 
     for board_idx in range(BOARD_LEN):

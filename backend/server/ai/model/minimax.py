@@ -7,30 +7,30 @@ from .utils import get_open_cells, decompress
 from .evaluator import heuristic, heuristics_sort
 
 
-def minimax(
+def minimax_move(
     big_board: str,
     board_idx: int,
     depth: int,
-    alpha: int,
-    beta: int,
+    alpha: float,
+    beta: float,
     is_maximizing: bool,
-) -> Tuple[int, int]:
+) -> Tuple[Tuple[int, int], float]:
     decompressed_big_board = decompress(big_board)
     has_won, winner = check_game_win(decompressed_big_board)
 
     if has_won:
-        return None, math.inf if winner == PLAYER1_WIN else -math.inf
+        return (-1, -1), math.inf if winner == PLAYER1_WIN else -math.inf
 
     if depth == 0:
         score = heuristic(decompressed_big_board, is_maximizing)
-        return None, score
+        return (-1, -1), score
 
     decompressed_big_board = None
 
     possible_moves = get_open_cells(big_board, board_idx)
     # this implies the game is drawn, since no valid moves remain
     if not possible_moves:
-        return None, -20 if is_maximizing else 20
+        return (-1, -1), -20 if is_maximizing else 20
 
     if depth >= DEPTH - 1:
         possible_moves = heuristics_sort(big_board, possible_moves, is_maximizing)
@@ -43,7 +43,7 @@ def minimax(
             big_board, board_i, cell_i, is_maximizing
         )
 
-        _, new_score = minimax(
+        _, new_score = minimax_move(
             new_big_board,
             new_board_idx,
             depth - 1,

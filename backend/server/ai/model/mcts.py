@@ -1,4 +1,5 @@
 import time
+from typing import Tuple
 
 
 from .parameters import SEARCH_TIME
@@ -25,13 +26,13 @@ def simulate(node: TSNode):
     return winner
 
 
-def backprop(node: TSNode, sim_winner: str):
+def backprop(node: TSNode | None, sim_winner: str):
     while node:
         node.update_stats(sim_winner)
         node = node.parent
 
 
-def select_best_move(root: TSNode):
+def select_best_move(root: TSNode) -> Tuple[int, int]:
     best_move, max_sims = None, 0
     # print(root.num_sims)
     for move in root.children:
@@ -39,6 +40,9 @@ def select_best_move(root: TSNode):
         # print(f"move: {move}, ratio: {node.wins} / {node.num_sims}")
         if node.num_sims > max_sims:
             best_move, max_sims = move, node.num_sims
+
+    if not best_move:
+        raise Exception("Best move must exist!")
 
     return best_move
 

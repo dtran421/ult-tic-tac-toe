@@ -13,13 +13,13 @@ class TSNode:
 
     def __init__(
         self,
-        parent: "TSNode",
+        parent: "TSNode" | None,
         big_board: str,
         board_idx: int,
         is_player_1: bool,
     ):
         self.parent = parent
-        self.children = {}
+        self.children: dict[Tuple[int, int], "TSNode"] = {}
 
         self.big_board = big_board
         self.board_idx = board_idx
@@ -51,12 +51,14 @@ class TSNode:
 
     def is_fully_expanded(self) -> bool:
         possible_moves = get_open_cells(self.big_board, self.board_idx)
-        return possible_moves and len(self.children) == len(possible_moves)
+        return len(possible_moves) == 0 and len(self.children) == len(possible_moves)
 
-    def compute_uct(self) -> float:
+    def compute_ucb(self) -> float:
         """
         computes the Upper Confidence Bound applied to trees
         """
+        if not self.parent:
+            raise Exception("Cannot compute UCB for root!")
 
         # exploitation component (score avg = agg. score / # sims)
         exploit_comp = self.wins / self.num_sims
@@ -81,13 +83,16 @@ class TSNode:
     def select_best_child(self) -> "TSNode":
         best_child, max_uct = None, -math.inf
         for node in self.children.values():
-            child_uct = node.compute_uct()
+            child_uct = node.compute_ucb()
             if child_uct >= max_uct:
                 best_child, max_uct = node, child_uct
 
+        if not best_child:
+            raise Exception("Best child can't be empty")
+
         return best_child
 
-    def choose_random_child(self) -> Union["TSNode", None]:
+    def choose_random_child(self) -> "TSNode":
         possible_moves = get_open_cells(self.big_board, self.board_idx)
         board_i, cell_i = random.choice(possible_moves)
 
@@ -99,4 +104,4 @@ class TSNode:
     def is_terminal(self) -> Tuple[bool, str]:
         decompressed_big_board = decompress(self.big_board)
         has_won, winner = check_game_win(decompressed_big_board)
-        return has_won or check_game_draw(self.big_board), winner
+        return has_won or check_game_draw(decompressed_big_board), winner
