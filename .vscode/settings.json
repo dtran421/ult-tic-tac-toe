@@ -1,4 +1,7 @@
 {
     "python.analysis.typeCheckingMode": "basic",
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "eslint.workingDirectories": [
+        "./frontend"
+    ]
 }

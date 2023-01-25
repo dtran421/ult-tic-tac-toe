@@ -32,7 +32,7 @@ const PlayerModule = ({ player, isPlaying, canAIPlay }: PlayerModuleProps) => {
         <div className="flex flex-col space-y-2">
             <div className="flex justify-between items-center">
                 <h2 className="text-white font-semibold">
-                    {player === "Player1" ? "Player 1" : "Player2"}
+                    {player === "Player1" ? "Player 1" : "Player 2"}
                 </h2>
                 {playerTypes[player] === "Monte Carlo" && (
                     <p className="bg-zinc-700/60 text-white rounded-lg px-3 py-1">

@@ -56,7 +56,7 @@ const BoardNotation = () => {
             </div>
             <p className="text-white text-center">
                 Moves are ascribed a positional indicator using row-major order
-                (row first, then column). In relations to the big board, moves
+                (row first, then column). In relation to the big board, moves
                 have two indicators, the first for the big board and the second
                 for the smaller board. For example, a move in the middle left
                 board in the top right cell would be notated as{" "}
