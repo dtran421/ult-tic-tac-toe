@@ -50,15 +50,22 @@ const useGame = () => {
         } else {
             if (playerTypes[player] !== "Human" && canAIPlay[player]) {
                 (async () => {
-                    const res = await fetch(`${process.env.API_HOSTNAME}`, {
-                        method: "POST",
-                        headers: { "Content-Type": "text/plain" },
-                        body: `${bigBoard
-                            .map((board) =>
-                                board.map((marker) => marker || ".").join("")
-                            )
-                            .join("#")}$${activeBoard}$${playerTypes[player]}`
-                    });
+                    const res = await fetch(
+                        `${import.meta.env.VITE_API_HOSTNAME}`,
+                        {
+                            method: "POST",
+                            headers: { "Content-Type": "text/plain" },
+                            body: `${bigBoard
+                                .map((board) =>
+                                    board
+                                        .map((marker) => marker || ".")
+                                        .join("")
+                                )
+                                .join("#")}$${activeBoard}$${
+                                playerTypes[player]
+                            }`
+                        }
+                    );
                     const body = (await res.text())
                         .split("$")
                         .map((val) => parseInt(val));
