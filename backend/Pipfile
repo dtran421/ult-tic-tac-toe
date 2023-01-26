@@ -9,6 +9,7 @@ django = "*"
 autopep8 = "*"
 flake8 = "*"
 django-cors-headers = "*"
+python-dotenv = "*"
 
 [dev-packages]
 

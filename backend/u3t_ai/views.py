@@ -1,5 +1,5 @@
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 
 import datetime
 
@@ -10,7 +10,10 @@ from . import model
 
 
 @csrf_exempt
-def index(request):
+def index(request: HttpRequest):
+    if request.method == "GET":
+        return HttpResponse("ult-tic-tac-toe (U3T) ai")
+
     params = request.body.decode("utf-8").split("$")
     ubsf_str = "$".join(params[:-1])
     print(f"ubsf: {ubsf_str}")
