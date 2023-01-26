@@ -29,7 +29,7 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("VERCEL_ENV") == "development"
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"] if DEBUG else [os.environ.get("CLIENT_HOSTNAME", "").replace("https://", "")]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"] if DEBUG else [".vercel.app", "u3t.vercel.app"]
 
 
 # Application definition
