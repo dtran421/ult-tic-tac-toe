@@ -29,7 +29,7 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("VERCEL_ENV") == "development"
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"] if DEBUG else ["u3t.vercel.app"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"] if DEBUG else ["*"]
 
 
 # Application definition
@@ -98,4 +98,4 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CORS_ALLOWED_ORIGINS = [os.environ.get("CLIENT_HOSTNAME")]
+CORS_ALLOWED_ORIGINS = [os.environ.get("CLIENT_HOSTNAME")] if DEBUG else ["*"]
