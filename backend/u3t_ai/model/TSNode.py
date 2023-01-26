@@ -4,7 +4,7 @@ from typing import Tuple, Union
 
 from .parameters import PLAYER1_MARKER, PLAYER2_MARKER
 from .utils import decompress, get_open_cells
-from .game import check_game_draw, check_game_win, is_drawn, make_move
+from .game import check_game_draw, check_game_win, make_move
 
 
 class TSNode:
@@ -13,7 +13,7 @@ class TSNode:
 
     def __init__(
         self,
-        parent: "TSNode" | None,
+        parent: Union["TSNode", None],
         big_board: str,
         board_idx: int,
         is_player_1: bool,

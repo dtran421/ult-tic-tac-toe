@@ -15,7 +15,7 @@ def index(request):
     ubsf_str = "$".join(params[:-1])
     print(f"ubsf: {ubsf_str}")
 
-    with open("debug_log.txt", "a") as debug_log:
+    with open("u3t_ai/debug_log.txt", "a+") as debug_log:
         debug_log.write(f"[{datetime.datetime.now()}] {ubsf_str}")
         debug_log.write("\n")
 
@@ -31,4 +31,4 @@ def index(request):
 @csrf_exempt
 def simulate(_):
     simulator.run_simulation()
-    return HttpResponse(f"hello world!")
+    return HttpResponse("hello world!")

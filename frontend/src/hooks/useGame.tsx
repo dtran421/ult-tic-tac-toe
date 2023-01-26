@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import _ from "lodash";
 
 import useBigBoard from "./useBigBoard";
 
@@ -51,7 +50,7 @@ const useGame = () => {
         } else {
             if (playerTypes[player] !== "Human" && canAIPlay[player]) {
                 (async () => {
-                    const res = await fetch("http://127.0.0.1:8000/ai/", {
+                    const res = await fetch("http://127.0.0.1:8000/", {
                         method: "POST",
                         headers: { "Content-Type": "text/plain" },
                         body: `${bigBoard

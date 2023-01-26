@@ -1,5 +1,5 @@
 import time
-from typing import Tuple
+from typing import Tuple, Union
 
 
 from .parameters import SEARCH_TIME
@@ -26,7 +26,7 @@ def simulate(node: TSNode):
     return winner
 
 
-def backprop(node: TSNode | None, sim_winner: str):
+def backprop(node: Union[TSNode, None], sim_winner: str):
     while node:
         node.update_stats(sim_winner)
         node = node.parent

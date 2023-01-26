@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class UltTicTacToeConfig(AppConfig):
+class U3TAIConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'ult_tic_tac_toe'
+    name = 'u3t_ai'
