@@ -50,7 +50,7 @@ const useGame = () => {
         } else {
             if (playerTypes[player] !== "Human" && canAIPlay[player]) {
                 (async () => {
-                    const res = await fetch("http://127.0.0.1:8000/", {
+                    const res = await fetch(`${process.env.API_HOSTNAME}`, {
                         method: "POST",
                         headers: { "Content-Type": "text/plain" },
                         body: `${bigBoard
