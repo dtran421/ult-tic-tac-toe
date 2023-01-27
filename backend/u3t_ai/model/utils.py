@@ -59,7 +59,7 @@ def decompress(big_board: str) -> List[str]:
             new_big_board[board_i] = big_board[i]
             i += 1
         else:
-            new_big_board[board_i] = big_board[i : i + BOARD_LEN]
+            new_big_board[board_i] = big_board[i: i + BOARD_LEN]
             i += BOARD_LEN
 
     return new_big_board
@@ -71,7 +71,8 @@ def is_empty_board(board: str) -> bool:
 
 def is_completed_board(board: str) -> bool:
     """
-    a board is completed if, after compression, it has only one marker in it (the symbolic winning marker or drawn marker)
+    a board is completed if, after compression, it has only one marker in it
+    (the symbolic winning marker or drawn marker)
     """
 
     return board == PLAYER1_WIN or board == PLAYER2_WIN or board == DRAW_SYMBOL
@@ -93,7 +94,7 @@ def translate_board_idx(big_board: str, board_idx: int) -> int:
 def get_open_cells(big_board: str, board_idx: int) -> List[Tuple[int, int]]:
     """
     Accepts a compressed big board and active board index as parameters and
-    returns a list of (board_i, cell_i) tuples denoting possible valid moves 
+    returns a list of (board_i, cell_i) tuples denoting possible valid moves
     for the board at the given index (or all boards if index == -1).
 
     Assumes that the board index has been checked for validity prior.
@@ -128,20 +129,20 @@ def get_open_cells(big_board: str, board_idx: int) -> List[Tuple[int, int]]:
 
 def collapse_board(big_board: str, translated_board_idx: int) -> str:
     has_won, winner = check_win(
-        big_board[translated_board_idx : translated_board_idx + BOARD_LEN]
+        big_board[translated_board_idx: translated_board_idx + BOARD_LEN]
     )
     if has_won:
         big_board = (
             big_board[:translated_board_idx]
             + (PLAYER1_WIN if winner == PLAYER1_MARKER else PLAYER2_WIN)
-            + big_board[translated_board_idx + BOARD_LEN :]
+            + big_board[translated_board_idx + BOARD_LEN:]
         )
 
-    elif is_drawn(big_board[translated_board_idx : translated_board_idx + BOARD_LEN]):
+    elif is_drawn(big_board[translated_board_idx: translated_board_idx + BOARD_LEN]):
         big_board = (
             big_board[:translated_board_idx]
             + DRAW_SYMBOL
-            + big_board[translated_board_idx + BOARD_LEN :]
+            + big_board[translated_board_idx + BOARD_LEN:]
         )
 
     return big_board

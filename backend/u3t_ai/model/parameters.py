@@ -32,4 +32,4 @@ DEPTH = PLIES  # ==> # of plies
 """
 Monte Carlo hyperparameters
 """
-SEARCH_TIME = 20  # ==> secs to search
+SEARCH_TIME = 10  # ==> secs to search

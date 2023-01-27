@@ -8,6 +8,6 @@ def random_move(big_board: str, board_idx: int) -> Tuple[int, int]:
 
     try:
         return random.choice(possible_cells)
-    except:
+    except IndexError:
         print("Error: no possible moves in current board")
         return board_idx, -1

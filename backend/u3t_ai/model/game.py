@@ -89,7 +89,8 @@ def check_game_win(big_board: List[str]) -> Tuple[bool, str]:
     """
     Determines if a (decompressed) big board is won.
 
-    Returns a bool has_won and str winner indicating the marker ("X" or "O") of the winning player, or "" if drawn or otherwise.
+    Returns a bool has_won and str winner indicating the marker ("X" or "O") of the winning player,
+    or "" if drawn or otherwise.
     """
     has_won = False
     winner = ""
@@ -153,13 +154,13 @@ def make_move(
             + (EMPTY_MARKER * cell_idx)
             + (PLAYER1_MARKER if is_player_1 else PLAYER2_MARKER)
             + (EMPTY_MARKER * (BOARD_LEN - cell_idx - 1))
-            + big_board[translated_board_idx + 1 :]
+            + big_board[translated_board_idx + 1:]
         )
     else:
         big_board = (
             big_board[:translated_cell_idx]
             + (PLAYER1_MARKER if is_player_1 else PLAYER2_MARKER)
-            + big_board[translated_cell_idx + 1 :]
+            + big_board[translated_cell_idx + 1:]
         )
 
     new_big_board = collapse_board(big_board, translated_board_idx)
