@@ -29,12 +29,14 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("VERCEL_ENV") == "development"
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"] if DEBUG else ["u3t.vercel.app"]
+# ALLOWED_HOSTS = ["localhost", "127.0.0.1"] if DEBUG else ["*"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    "corsheaders",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -50,6 +52,7 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    "corsheaders.middleware.CorsPostCsrfMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -73,7 +76,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "server.wsgi.application"
+WSGI_APPLICATION = "server.wsgi.app"
 
 
 # Internationalization
@@ -98,4 +101,5 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CORS_ALLOWED_ORIGINS = [os.environ.get("CLIENT_HOSTNAME")]
+# CORS_ALLOWED_ORIGINS = [os.environ.get("CLIENT_HOSTNAME")] if DEBUG else ["*"]
+CORS_ALLOW_ALL_ORIGINS = True

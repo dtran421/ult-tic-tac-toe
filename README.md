@@ -4,11 +4,11 @@ This project provides a user-friendly web platform to play the largely underrate
 
 ## Supplemental Material
 
-    - Minimax
-        - [Wikipedia, Core Ideas and Pseudocode](https://en.wikipedia.org/wiki/Minimax)
-        - [Heuristic Functions](https://boardgames.stackexchange.com/questions/49291/strategy-for-ultimate-tic-tac-toe)
-        
-    - Monte Carlo Tree Search Algorithm
-        - [Wikipedia, Core Ideas](https://en.wikipedia.org/wiki/Monte_Carlo_tree_search)
-        - [GeeksforGeeks Summary, Pseudocode](https://www.geeksforgeeks.org/ml-monte-carlo-tree-search-mcts/)
-        - [In-depth Algorithm Breakdown](https://int8.io/monte-carlo-tree-search-beginners-guide/)
+- Minimax
+  - [Wikipedia, Core Ideas and Pseudocode](https://en.wikipedia.org/wiki/Minimax)
+  - [Heuristic Functions](https://boardgames.stackexchange.com/questions/49291/strategy-for-ultimate-tic-tac-toe)
+
+- Monte Carlo Tree Search Algorithm
+  - [Wikipedia, Core Ideas](https://en.wikipedia.org/wiki/Monte_Carlo_tree_search)
+  - [GeeksforGeeks Summary, Pseudocode](https://www.geeksforgeeks.org/ml-monte-carlo-tree-search-mcts/)
+  - [In-depth Algorithm Breakdown](https://int8.io/monte-carlo-tree-search-beginners-guide/)
