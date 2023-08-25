@@ -9,7 +9,7 @@ from .parameters import (
     EMPTY_SYMBOL,
     DRAW_SYMBOL,
 )
-from .game import BOARD_LEN, is_drawn, check_win
+from .game import BOARD_LEN, check_win
 
 
 def is_player1(big_board: str) -> bool:
@@ -38,12 +38,12 @@ def compress(big_board: List[str]) -> str:
         if check_empty(board):
             new_big_board += EMPTY_SYMBOL
         else:
-            has_won, winner = check_win(board)
+            has_won, winner, is_drawn = check_win(board)
             if has_won:
                 new_big_board += (
                     PLAYER1_WIN if winner == PLAYER1_MARKER else PLAYER2_WIN
                 )
-            elif is_drawn(board):
+            elif is_drawn:
                 new_big_board += DRAW_SYMBOL
             else:
                 new_big_board += board
@@ -59,7 +59,7 @@ def decompress(big_board: str) -> List[str]:
             new_big_board[board_i] = big_board[i]
             i += 1
         else:
-            new_big_board[board_i] = big_board[i: i + BOARD_LEN]
+            new_big_board[board_i] = big_board[i : i + BOARD_LEN]
             i += BOARD_LEN
 
     return new_big_board
@@ -128,21 +128,21 @@ def get_open_cells(big_board: str, board_idx: int) -> List[Tuple[int, int]]:
 
 
 def collapse_board(big_board: str, translated_board_idx: int) -> str:
-    has_won, winner = check_win(
-        big_board[translated_board_idx: translated_board_idx + BOARD_LEN]
+    has_won, winner, is_drawn = check_win(
+        big_board[translated_board_idx : translated_board_idx + BOARD_LEN]
     )
     if has_won:
         big_board = (
             big_board[:translated_board_idx]
             + (PLAYER1_WIN if winner == PLAYER1_MARKER else PLAYER2_WIN)
-            + big_board[translated_board_idx + BOARD_LEN:]
+            + big_board[translated_board_idx + BOARD_LEN :]
         )
 
-    elif is_drawn(big_board[translated_board_idx: translated_board_idx + BOARD_LEN]):
+    elif is_drawn:
         big_board = (
             big_board[:translated_board_idx]
             + DRAW_SYMBOL
-            + big_board[translated_board_idx + BOARD_LEN:]
+            + big_board[translated_board_idx + BOARD_LEN :]
         )
 
     return big_board

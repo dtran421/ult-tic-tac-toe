@@ -21,8 +21,7 @@ def index(request: HttpRequest):
 
     if os.environ.get("VERCEL_ENV") == "development":
         with open("u3t_ai/debug_log.txt", "a+") as debug_log:
-            debug_log.write(f"[{datetime.datetime.now()}] {ubsf_str}")
-            debug_log.write("\n")
+            debug_log.write(f"[{datetime.datetime.now()}] {ubsf_str}\n")
 
     big_board, board_idx, ai_type = params[0].split("#"), int(params[1]), params[2]
 

@@ -33,7 +33,7 @@ def heuristics_sort(
 
         sorted_moves.append((score, move))
 
-    return [i[1] for i in sorted(sorted_moves, reverse=is_maximizing)]
+    return [move for _, move in sorted(sorted_moves, reverse=is_maximizing)]
 
 
 def compute_board_score_potential(

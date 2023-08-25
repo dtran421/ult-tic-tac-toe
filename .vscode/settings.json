@@ -3,5 +3,9 @@
     "python.linting.enabled": true,
     "eslint.workingDirectories": [
         "./frontend"
-    ]
+    ],
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "python.formatting.provider": "none"
 }

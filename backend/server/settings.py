@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "u3t_ai"
+    "u3t_ai",
 ]
 
 MIDDLEWARE = [
@@ -105,3 +105,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # TODO: Fix this!
 # CORS_ALLOWED_ORIGINS = [os.environ.get("CLIENT_HOSTNAME")] if DEBUG else ["*"]
 CORS_ALLOW_ALL_ORIGINS = True
+
+# * ignore this -- not needed
+DATABASES = {
+    "default": {"ENGINE": "django.db.backends.sqlite3", "NAME": BASE_DIR / "db.sqlite3"}
+}

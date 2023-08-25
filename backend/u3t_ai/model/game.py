@@ -12,10 +12,10 @@ from .parameters import (
 )
 
 
-def is_drawn(board: str) -> bool:
+def is_board_full(board: str) -> bool:
     """
-    Determines if a small board is drawn. Must be called after check_win since
-    it checks if there are any more empty cells.
+    Determines if a small board is full. It can be used to check
+    for a draw (which can only happen if no one has won).
     """
     for cell_idx in range(BOARD_LEN):
         if board[cell_idx] == EMPTY_MARKER:
@@ -24,11 +24,15 @@ def is_drawn(board: str) -> bool:
     return True
 
 
-def check_win(board: str) -> Tuple[bool, str]:
+def check_win(board: str) -> Tuple[bool, str, bool]:
     """
-    Determines if a small board is won.
+    Determines if a small board is won or drawn.
 
-    Returns a bool has_won and str winner indicating the marker ("X" or "O") of the winning player.
+    Returns
+        - has_won: bool
+        - winner: str, the marker ("X" or "O") of the winning player, or
+          "" if drawn or otherwise
+        - is_drawn: bool, if the board is drawn.
     """
     has_won = False
     winner = ""
@@ -67,7 +71,9 @@ def check_win(board: str) -> Tuple[bool, str]:
         has_won |= check
         winner = board[BOARD_SIZE - 1] if check else winner
 
-    return has_won, winner
+    is_drawn = not has_won and is_board_full(board)
+
+    return has_won, winner, is_drawn
 
 
 def check_game_draw(big_board: List[str]) -> bool:
@@ -154,13 +160,13 @@ def make_move(
             + (EMPTY_MARKER * cell_idx)
             + (PLAYER1_MARKER if is_player_1 else PLAYER2_MARKER)
             + (EMPTY_MARKER * (BOARD_LEN - cell_idx - 1))
-            + big_board[translated_board_idx + 1:]
+            + big_board[translated_board_idx + 1 :]
         )
     else:
         big_board = (
             big_board[:translated_cell_idx]
             + (PLAYER1_MARKER if is_player_1 else PLAYER2_MARKER)
-            + big_board[translated_cell_idx + 1:]
+            + big_board[translated_cell_idx + 1 :]
         )
 
     new_big_board = collapse_board(big_board, translated_board_idx)
